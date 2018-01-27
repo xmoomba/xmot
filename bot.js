@@ -122,7 +122,7 @@ function getCookie(cname) {
 }
 
 function loadData() {
-    $('.market-con ul').prepend('<div style="width:113%" class="xdel"><input class="active" type="checkbox" style="margin:2px;">T<input class="conf_target" type="text" value="-" style="width:15px;margin:2px;"> O<input class="conf_offset" type="text" value="-" style="width:15px;margin:2px;"></div>');
+    $('.market-con ul').prepend('<div style="width:113%" class="xdel"><input class="active" type="checkbox" style="margin:2px;">T<input class="conf_target" type="text" value="-" style="width:10px;margin-right:2px;"> O<input class="conf_offset" type="text" value="-" style="width:10px;margin:0px;"></div>');
     $('.market-con ul li:nth-child(3)').css('width','20%');
     $('.market-con ul li:nth-child(4)').css('width','100%');
     $('.market-con ul li:nth-child(5)').css('width','50%');
