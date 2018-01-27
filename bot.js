@@ -244,7 +244,6 @@ function xmotC() {
 				
 				if ((buy > sell && currentPrice > lastPrice) || (buy < sell && currentPrice < lastPrice))
 				{
-					/*alert('ooh');*/
 					go();
 					i = 1;
 				}  
