@@ -9,12 +9,12 @@ $('.item-title-btns span:nth-child(2)').click();
 
 $('.orderform-type span:nth-child(2)').click();
 $('.orderform-main.f-cb.marketOrder .f-fl:nth-child(1)').after(
-	'<div id="xmot" class="f-fl" style="width:182px;padding:10px;margin:0 0px;border: 1px solid black">'
+	'<div id="xmot" class="f-fl" style="width:182px;padding:9px;margin:0 0px;border: 1px solid black">'
 	+ 	'<center>'
 	+	 	'<h1 class="coin" style="color:grey;">XmoT</h1>'
 	+		'<br />'
 	+		'<input id="cycle" type="checkbox" checked>'
-	+		' Cycle <input id="timeSwitch" value="20" type="text" style="width:30px;margin:3px;padding-left:2px">'
+	+		' Cycle <input id="timeSwitch" value="10" type="text" style="width:30px;margin:3px;padding-left:2px">'
 	+		'<br />'
 	+		'<input id="autoTrade" type="checkbox"> AutoTrade'
 	+		'<br />'
@@ -25,7 +25,7 @@ $('.orderform-main.f-cb.marketOrder .f-fl:nth-child(1)').after(
 	+		'<div style="margin:3px">'
 	+			'Target <input id="inputTarget" value="0.005" type="text" style="width:40px;margin:3px;padding-left:2px">'
 	+			'<br />'
-	+			'Offset <input id="inputOffset" value="3" type="text" style="width:30px;margin:3px;padding-left:2px">%'
+	+			'Offset <input id="inputOffset" value="2" type="text" style="width:30px;margin:3px;padding-left:2px">%'
 	+		'</div>'
 	+		'<div class="dot" style="margin:10px;">Waiting</div>'
 	+		'<div style="position:relative;width:109px;margin:10px 0">'
@@ -97,12 +97,14 @@ function debug() {
 		+ 		'<div><div class="var">sell</div><div class="val">'+sell+'</div></div>'
 		+ 		'<div><div class="var">bestbuy</div><div class="val">'+bestbuy+'</div></div>'
 		+ 		'<div><div class="var">bestsell</div><div class="val">'+bestsell+'</div></div>'
+		+ 		'<div><div class="var">currentPrice</div><div class="val">'+currentPrice+'</div></div>'
+		+ 		'<div><div class="var">lastPrice</div><div class="val">'+lastPrice+'</div></div>'
 		+ 	'</div>';
 	css = 	'<style>'
 		+		'#xmot #vartab { border: 1px solid black; padding: 3px; font-size:10px; }'
 		+		'#xmot #vartab .var { width: 60px; border:  1px solid black; background: yellow; display: inline-block; padding:2px; }'
 		+		'#xmot #vartab .val { width: 104px;  border: 1px solid black;  background: white; display: inline-block; padding:2px; }'
-		+ 	'</style>'
+		+ 	'</style>';
 	$('.debug').html(tab+css);
 }
 
@@ -116,7 +118,7 @@ var lock = 0;
 var switchLock = 0;
 tata = 0;
 timeout = 180;
-var actual, mine, target, mini, eqBTC, myBTC, buy, sell, bestbuy, bestsell;
+var actual, mine, target, mini, eqBTC, myBTC, buy, sell, bestbuy, bestsell, currentPrice, lastPrice;
 
 $('#xmot #start').on('click', function() {
     if (running == 0)
@@ -244,8 +246,8 @@ function xmotC() {
         {
             tata = i;
 			$.get('https://www.binance.com/api/v1/klines?symbol='+coin+'BTC&interval=1m', function(data){
-				var currentPrice = data[499][4];
-				var lastPrice = data[498][1];
+				currentPrice = data[499][4];
+				lastPrice = data[498][1];
 				if ((buy > sell && currentPrice > lastPrice) || (buy < sell && currentPrice < lastPrice))
 				{
 					go();
