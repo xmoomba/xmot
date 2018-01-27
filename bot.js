@@ -1,4 +1,4 @@
-$('.container').css('width', '1401px');
+javascript:$('.container').css('width', '1401px');
 $('.chart').css('padding-left', '100px');
 $('#xmot #stop').click();
 $('#xmot, .xdel').remove();
@@ -78,7 +78,6 @@ function debug() {
         + '<div><div class="var">i</div><div class="val">' + i + '</div></div>'
         + '<div><div class="var">lock</div><div class="val">' + lock + '</div></div>'
         + '<div><div class="var">switchLock</div><div class="val">' + switchLock + '</div></div>'
-        + '<div><div class="var">tata</div><div class="val">' + tata + '</div></div>'
         + '<div><div class="var">actual</div><div class="val">' + actual + '</div></div>'
         + '<div><div class="var">mine</div><div class="val">' + mine + '</div></div>'
         + '<div><div class="var">target</div><div class="val">' + target + '</div></div>'
@@ -100,6 +99,62 @@ function debug() {
     $('.debug').html(tab + css);
 }
 
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+function loadData() {
+    $('.market-con ul').prepend('<div style="width:113%" class="xdel"><input class="active" type="checkbox" style="margin:2px;">T<input class="conf_target" type="text" value="-" style="width:15px;margin:2px;"> O<input class="conf_offset" type="text" value="-" style="width:15px;margin:2px;"></div>');
+    $('.market-con ul li:nth-child(3)').css('width','20%');
+    $('.market-con ul li:nth-child(4)').css('width','100%');
+    $('.market-con ul li:nth-child(5)').css('width','50%');
+
+    $('.market-con ul li:nth-child(3)').each(function() {
+        $(this).parent().attr('id', 'conf_'+$(this).text().split('/')[0]);
+        $(this).html($(this).text().split('/')[0]);
+        $(this).css('width','50px;');
+    });
+    conf = getCookie('conf_xmot');
+    $.each(conf.split('|'), function() {
+        $('#conf_' + this.split('-')[0] + ' .conf_target').val(this.split('-')[1]);
+        $('#conf_' + this.split('-')[0] + ' .conf_offset').val(this.split('-')[2]);
+        $('#conf_' + this.split('-')[0] + ' .active').attr('checked','checked');
+
+    })
+}
+
+loadData();
+function saveData() {
+    save = '';
+    $('.market-con ul').each(function() {
+        if ($(this).find('.active:checked').val() == 'on') {
+            ctarget = $(this).find('.conf_target').val();
+            coffset = $(this).find('.conf_offset').val();
+            curr = $(this).find('li:nth-child(3)').text().split('/')[0];
+            save += (save ? '|' : '') + curr + '-' + ctarget + '-' + coffset
+        }
+    });
+    setCookie('conf_xmot', save);
+}
+
 switchCoin();
 var targetBTC = $('#inputTarget').val();
 var targetOffset = $('#inputOffset').val() / 100;
@@ -112,7 +167,7 @@ timeout = 180;
 var actual, mine, target, mini, eqBTC, myBTC, buy, sell, bestbuy, bestsell, currentPrice, lastPrice;
 
 $('#xmot #start').on('click', function () {
-    if (running == 0) {
+   if (running == 0) {
         handler = setInterval(function () {
             $('#xmot .dot').html('Analyze' + state[i++ % 4]);
             if ((i % $('#timeSwitch').val() == 0 && switchLock == 0) || i > timeout) {
@@ -158,12 +213,17 @@ function go() {
 }
 
 function xmotC() {
+
+    saveData();
+
+
     if ($('#debugMode:checked').val() == 'on')
         debug();
     else
         $('.debug').html('');
 
-    /* highlight */
+
+   /* highlight */
     var hour = 0;
     color = 'lightgrey';
     $('#tradeHistory table tr').each(function () {
@@ -176,6 +236,10 @@ function xmotC() {
     $('#defaultStart').click();
     $('#cursor').show();
     coin = $($('.orderforms-hd div label').get(0)).text().split(' ')[1];
+    $('#inputTarget').val($('#conf_'+coin+' .conf_target').val() / 1000);
+    $('#inputOffset').val($('#conf_'+coin+' .conf_offset').val());
+
+
     $('.coin').html(coin);
     targetBTC = $('#inputTarget').val();
     targetOffset = $('#inputOffset').val() / 100;
@@ -214,25 +278,32 @@ function xmotC() {
     $('#market_sellQuanity').val(sell);
     $('#xmot .display').html('<button onclick="go()" id="go" style="padding: 2px">' + (buy > sell ? 'BUY ' : 'SELL ') + Math.round(Math.abs(buy - sell) * multiplier) / multiplier + ' ' + coin + '</button>');
 
-    if ((mine == target) || (buy == sell) || parseFloat((bestbuy * buy) - 0.0022) > parseFloat(myBTC)) {
-        $('#xmot .display').html('DO NOTHING');
+
+    if ($('#conf_'+coin+' .active:checked').val() != 'on'){
+        $('#xmot .display').html('DISABLED');
         $('#market_buyQuanity').val('-');
         $('#market_sellQuanity').val('-');
-        switchLock = 0;
-        currentPrice = '-';
-        lastPrice = '-';
+        switchCoin();
     } else {
-        switchLock = 1;
-        if ($('#autoTrade:checked').val() == 'on') {
-            $.get('https://www.binance.com/api/v1/klines?symbol=' + coin + 'BTC&interval=1m', function (data) {
-                currentPrice = data[499][4];
-                lastPrice = data[498][1];
-                if ((buy > sell && currentPrice > lastPrice) || (buy < sell && currentPrice < lastPrice)) {
-                    go();
-                }
-            });
+        if ((mine == target) || (buy == sell) || parseFloat((bestbuy * buy) - 0.0022) > parseFloat(myBTC)) {
+            $('#xmot .display').html('DO NOTHING');
+            $('#market_buyQuanity').val('-');
+            $('#market_sellQuanity').val('-');
+            switchLock = 0;
+            currentPrice = '-';
+            lastPrice = '-';
+        } else {
+            switchLock = 1;
+            if ($('#autoTrade:checked').val() == 'on') {
+                $.get('https://www.binance.com/api/v1/klines?symbol=' + coin + 'BTC&interval=1m', function (data) {
+                    currentPrice = data[499][4];
+                    lastPrice = data[498][1];
+                    if ((buy > sell && currentPrice > lastPrice) || (buy < sell && currentPrice < lastPrice)) {
+                        go();
+                    }
+                });
+            }
         }
     }
 }
-$('#xmot #start').click();
-ooo;
+$('#xmot #start').click();ooo;
