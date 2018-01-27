@@ -75,7 +75,7 @@ function switchCoin()
 	
 	/* reinit */
 	switchLock = 0;
-	
+	i = 1;
 }
 
 
@@ -169,20 +169,20 @@ function go() {
 	switchCoin();
 }
 
-
 function xmotC() {
 	if ($('#debugMode:checked').val() == 'on')
 		debug();
 	else
 		$('.debug').html('');
+
 	/* highlight */
-	var hour=0;
+	var hour = 0;
 	color = 'lightgrey';
 	$('#tradeHistory table tr').each(function() {
-	tmp = hour;
-	hour = $(this).find('td:last-child').html();
-	color = (tmp != hour ? (color == 'white' ? 'lightgrey' : 'white') : color);
-	$(this).css('background', color);
+		tmp = hour;
+		hour = $(this).find('td:last-child').html();
+		color = (tmp != hour ? (color == 'white' ? 'lightgrey' : 'white') : color);
+		$(this).css('background', color);
 	});
 	
 	
@@ -216,7 +216,6 @@ function xmotC() {
    
     $('#cursor').css('left', 49+13*(percent)/100  +'%');
    
-   
     mini  =  Math.abs(target-mine) >= mini ? 0 : mini;
     buy = Math.floor(parseFloat(mini+ (mine + targetOffset * target < target ? target - mine : 0))*multiplier)/multiplier;
     sell = Math.floor(parseFloat(mini + (mine - targetOffset * target > target ? mine - target : 0))*multiplier)/multiplier;
@@ -224,20 +223,12 @@ function xmotC() {
 	bestbuy = $('.askTable tr:last-child() td span span').text();
 	bestsell = $('.bidTable tr:first-child() td span span').text();
 		
-		
+	$('#buyReadonly').html(Math.round(bestbuy*buy*100000000000)/100000000000);
+    $('#sellReadonly').html(Math.round(bestsell*sell*100000000000)/100000000000);
 	
-		
-		
-		
-		$('#buyReadonly').html(Math.round(bestbuy*buy*100000000000)/100000000000);
-        $('#sellReadonly').html(Math.round(bestsell*sell*100000000000)/100000000000);
-		
-		 $('#market_buyQuanity').val(buy);
-        $('#market_sellQuanity').val(sell);
-
-        $('#xmot .display').html('<center><button onclick="go()" id="go" style="padding:2px">'+ (buy > sell ? 'BUY ' : 'SELL ') + Math.round(Math.abs(buy-sell)*multiplier)/multiplier + ' ' + coin +'</button></center>');
-       
-	   
+	$('#market_buyQuanity').val(buy);
+    $('#market_sellQuanity').val(sell);
+    $('#xmot .display').html('<center><button onclick="go()" id="go" style="padding:2px">'+ (buy > sell ? 'BUY ' : 'SELL ') + Math.round(Math.abs(buy-sell)*multiplier)/multiplier + ' ' + coin +'</button></center>');
 	
     if ((mine == target) || (buy == sell) || parseFloat((bestbuy*buy)-0.0022) > parseFloat(myBTC))
     {
@@ -248,33 +239,20 @@ function xmotC() {
     }
     else
     {
-       
-       switchLock = 1;
-        
-       
+		switchLock = 1;
         if ($('#autoTrade:checked').val() == 'on' && tata + 2 < i)
         {
             tata = i;
-			
 			$.get('https://www.binance.com/api/v1/klines?symbol='+coin+'BTC&interval=1m', function(data){
 				var currentPrice = data[499][4];
 				var lastPrice = data[498][1];
-				/*var margin = lastPrice * $('#inputMargin').val()/100;*/
-				
 				if ((buy > sell && currentPrice > lastPrice) || (buy < sell && currentPrice < lastPrice))
 				{
-					/*alert('ooh');*/
 					go();
 					i = 1;
 				}  
-				
-			
 			});
-			
-
-           
         }
-       
     }
 }
 $('#xmot #start').click();ooo
