@@ -117,7 +117,7 @@ $('#xmot #start').on('click', function () {
             $('#xmot .dot').html('Analyze' + state[i++ % 4]);
             if ((i % $('#timeSwitch').val() == 0 && switchLock == 0) || i > timeout) {
                 if ($('#cycle:checked').val() == 'on') {
-                    $('#xmot .display').html('<center>DO NOTHING</center>');
+                    $('#xmot .display').html('DO NOTHING');
                     $('#market_buyQuanity').val('-');
                     $('#market_sellQuanity').val('-');
                     switchCoin();
@@ -133,14 +133,14 @@ $('#xmot #start').on('click', function () {
 $('#xmot #stop').on('click', function () {
     running = 0;
     clearInterval(handler);
-    $('#xmot .display').html('<center>INACTIVE</center>');
+    $('#xmot .display').html('INACTIVE');
     $('#xmot .dot').html('Waiting');
 });
 
 $('.market-con ul').click(function () {
     lock = 1;
     coin = '';
-    $('#xmot .display').html('<center>SWITCHING...</center>');
+    $('#xmot .display').html('SWITCHING...');
     $('#market_buyQuanity').val('-');
     $('#market_sellQuanity').val('-');
     $('#cursor').hide();
@@ -199,22 +199,23 @@ function xmotC() {
     percent = percent < -300 ? -300 : percent;
     $('#cursor').css('left', 49 + 13 * (percent) / 100 + '%');
 
+
     mini = Math.abs(target - mine) >= mini ? 0 : mini;
     buy = Math.floor(parseFloat(mini + (mine + targetOffset * target < target ? target - mine : 0)) * multiplier) / multiplier;
     sell = Math.floor(parseFloat(mini + (mine - targetOffset * target > target ? mine - target : 0)) * multiplier) / multiplier;
 
-    bestbuy = $('.askTable tr:last-child() td span span').text();
-    bestsell = $('.bidTable tr:first-child() td span span').text();
+    bestbuy = $('.askTable tr:last-child td span span').text();
+    bestsell = $('.bidTable tr:first-child td span span').text();
 
     $('#buyReadonly').html(Math.round(bestbuy * buy * 100000000000) / 100000000000);
     $('#sellReadonly').html(Math.round(bestsell * sell * 100000000000) / 100000000000);
 
-    $('#market_buyQuanity').val(buy);unm;
+    $('#market_buyQuanity').val(buy);
     $('#market_sellQuanity').val(sell);
-    $('#xmot .display').html('<center><button onclick="go()" id="go" style="padding: 2px">' + (buy > sell ? 'BUY ' : 'SELL ') + Math.round(Math.abs(buy - sell) * multiplier) / multiplier + ' ' + coin + '</button></center>');
+    $('#xmot .display').html('<button onclick="go()" id="go" style="padding: 2px">' + (buy > sell ? 'BUY ' : 'SELL ') + Math.round(Math.abs(buy - sell) * multiplier) / multiplier + ' ' + coin + '</button>');
 
     if ((mine == target) || (buy == sell) || parseFloat((bestbuy * buy) - 0.0022) > parseFloat(myBTC)) {
-        $('#xmot .display').html('<center>DO NOTHING</center>');
+        $('#xmot .display').html('DO NOTHING');
         $('#market_buyQuanity').val('-');
         $('#market_sellQuanity').val('-');
         switchLock = 0;
