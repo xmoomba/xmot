@@ -17,11 +17,11 @@ $('.orderform-main.f-cb.marketOrder .f-fl:nth-child(1)').after(
 	+		' Cycle <input id="timeSwitch" value="20" type="text" style="width:30px;margin:3px;padding-left:2px">'
 	+		'<br />'
 	+		'<input id="autoTrade" type="checkbox"> AutoTrade'
-	+	'</center>'
-	+	'<br />'
-	+	'<button id="start" style="margin-left:16px;padding:4px">start</button>'
-	+	'<button id="stop" style="margin-left:16px;padding:4px">stop</button>'
-	+	'<center>'
+	+		'<br />'
+	+		'<br />'
+	+		'<button id="start" style="padding:4px">start</button>'
+	+		'<button id="stop" style="margin-left:16px;padding:4px">stop</button>'
+	+		'<br />'
 	+		'<div style="margin:3px">'
 	+			'Target <input id="inputTarget" value="0.005" type="text" style="width:40px;margin:3px;padding-left:2px">'
 	+			'<br />'
@@ -39,17 +39,18 @@ $('.orderform-main.f-cb.marketOrder .f-fl:nth-child(1)').after(
 	+				'<div style="position:absolute;margin: 7px 14px;color:white">S</div>'
 	+			'</div>'
 	+		'</div>'
-	+	'</center>'
 	+	'<div class="display"></div>'
+	+	'<br />'
 	+	'<input id="debugMode" type="checkbox"> debug'
 	+	'<div class="debug"></div>'
+	+	'</center>'
 	+'</div>');
 	
 	
 var coin =  $($('.marketOrder .orderforms-hd div label').get(0)).text().split(' ')[1];
 $($('.marketOrder .orderforms-hd div').get(0)).after('<div class="xdel">'
 													+	'<span class="f-fr ng-binding">'
-													+		'<span class="coin">' + coin + '</span>'
+													+		'<span class="coin">' + coin + '</span> '
 													+		'Eq: <span id="buyCoinEq"></span>'
 													+	'</span>'
 													+'</div>');
@@ -82,13 +83,25 @@ function debug() {
 	tab = 	'<div id="vartab">'
 		+ 		'<div><div class="var">coin</div><div class="val">'+coin+'</div></div>'
 		+ 		'<div><div class="var">running</div><div class="val">'+running+'</div></div>'
+		+ 		'<div><div class="var">i</div><div class="val">'+i+'</div></div>'
+		+ 		'<div><div class="var">lock</div><div class="val">'+lock+'</div></div>'
+		+ 		'<div><div class="var">switchLock</div><div class="val">'+switchLock+'</div></div>'
+		+ 		'<div><div class="var">tata</div><div class="val">'+tata+'</div></div>'
+		+ 		'<div><div class="var">actual</div><div class="val">'+actual+'</div></div>'
+		+ 		'<div><div class="var">mine</div><div class="val">'+mine+'</div></div>'
+		+ 		'<div><div class="var">target</div><div class="val">'+target+'</div></div>'
+		+ 		'<div><div class="var">mini</div><div class="val">'+mini+'</div></div>'
+		+ 		'<div><div class="var">eqBTC</div><div class="val">'+eqBTC+'</div></div>'
+		+ 		'<div><div class="var">myBTC</div><div class="val">'+myBTC+'</div></div>'
+		+ 		'<div><div class="var">buy</div><div class="val">'+buy+'</div></div>'
+		+ 		'<div><div class="var">sell</div><div class="val">'+sell+'</div></div>'
+		+ 		'<div><div class="var">bestbuy</div><div class="val">'+bestbuy+'</div></div>'
+		+ 		'<div><div class="var">bestsell</div><div class="val">'+bestsell+'</div></div>'
 		+ 	'</div>';
-		
-		
 	css = 	'<style>'
 		+		'#xmot #vartab { border: 1px solid black; padding: 3px; font-size:10px; }'
-		+		'#xmot #vartab .var { width: 60px; background: yellow; display: inline-block; padding:2px; }'
-		+		'#xmot #vartab .val { width: 50px; background: white; display: inline-block; padding:2px; }'
+		+		'#xmot #vartab .var { width: 60px; border:  1px solid black; background: yellow; display: inline-block; padding:2px; }'
+		+		'#xmot #vartab .val { width: 104px;  border: 1px solid black;  background: white; display: inline-block; padding:2px; }'
 		+ 	'</style>'
 	$('.debug').html(tab+css);
 }
@@ -102,12 +115,15 @@ var running = 0;
 var lock = 0;
 var switchLock = 0;
 tata = 0;
+timeout = 180;
+var actual, mine, target, mini, eqBTC, myBTC, buy, sell, bestbuy, bestsell;
+
 $('#xmot #start').on('click', function() {
     if (running == 0)
     {
         handler = setInterval(function() {
             $('#xmot .dot').html('Analyze'+state[i++%4]);
-            if (i%$('#timeSwitch').val() == 0 && switchLock == 0)
+            if ((i%$('#timeSwitch').val() == 0 && switchLock == 0) || i > timeout)
             {
                 if ($('#cycle:checked').val() == 'on')
                 {
@@ -155,7 +171,10 @@ function go() {
 
 
 function xmotC() {
-	debug();
+	if ($('#debugMode:checked').val() == 'on')
+		debug();
+	else
+		$('.debug').html('');
 	/* highlight */
 	var hour=0;
 	color = 'lightgrey';
@@ -180,12 +199,12 @@ function xmotC() {
     else
         multiplier = Math.pow(10, tmppow.length);
        
-    var actual = $('.newest').text().split('\t')[17].trim();
-    var mine = Math.floor($('.marketOrder .orderforms-hd span.f-fr').text().split(' ')[7]*100000000)/100000000;
-    var target = Math.floor(targetBTC / actual*100000000)/100000000;
-    var mini = Math.ceil(0.0022 / $('.newest').text().split('\t')[17].trim()*100000000)/100000000;
-    var eqBTC = Math.round($($('.marketOrder .orderforms-hd div span').get(4)).text().split(' ')[2] * actual * 100000000)/100000000;
-	var myBTC = $($('.marketOrder .orderforms-hd div span').get(0)).text().split(' ')[2];
+    actual = $('.newest').text().split('\t')[17].trim();
+    mine = Math.floor($('.marketOrder .orderforms-hd span.f-fr').text().split(' ')[7]*100000000)/100000000;
+    target = Math.floor(targetBTC / actual*100000000)/100000000;
+    mini = Math.ceil(0.0022 / $('.newest').text().split('\t')[17].trim()*100000000)/100000000;
+    eqBTC = Math.round($($('.marketOrder .orderforms-hd div span').get(4)).text().split(' ')[2] * actual * 100000000)/100000000;
+	myBTC = $($('.marketOrder .orderforms-hd div span').get(0)).text().split(' ')[2];
    
    
     $('#buyCoinEq').html(Math.round($($('.marketOrder .orderforms-hd div span').get(0)).text().split(' ')[2] / actual * 100000000)/100000000);
@@ -199,11 +218,11 @@ function xmotC() {
    
    
     mini  =  Math.abs(target-mine) >= mini ? 0 : mini;
-        var buy = Math.floor(parseFloat(mini+ (mine + targetOffset * target < target ? target - mine : 0))*multiplier)/multiplier;
-        var sell = Math.floor(parseFloat(mini + (mine - targetOffset * target > target ? mine - target : 0))*multiplier)/multiplier;
+    buy = Math.floor(parseFloat(mini+ (mine + targetOffset * target < target ? target - mine : 0))*multiplier)/multiplier;
+    sell = Math.floor(parseFloat(mini + (mine - targetOffset * target > target ? mine - target : 0))*multiplier)/multiplier;
        
-		var bestbuy = $('.askTable tr:last-child() td span span').text();
-        var bestsell = $('.bidTable tr:first-child() td span span').text();
+	bestbuy = $('.askTable tr:last-child() td span span').text();
+	bestsell = $('.bidTable tr:first-child() td span span').text();
 		
 		
 	
@@ -244,6 +263,7 @@ function xmotC() {
 				
 				if ((buy > sell && currentPrice > lastPrice) || (buy < sell && currentPrice < lastPrice))
 				{
+					/*alert('ooh');*/
 					go();
 					i = 1;
 				}  
