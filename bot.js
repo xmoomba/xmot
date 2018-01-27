@@ -101,9 +101,9 @@ function debug() {
 		+ 		'<div><div class="var">lastPrice</div><div class="val">'+lastPrice+'</div></div>'
 		+ 	'</div>';
 	css = 	'<style>'
-		+		'#xmot #vartab { border: 1px solid black; padding: 3px; font-size:10px; }'
+		+		'#xmot #vartab { border: 0px solid black; padding: 3px; font-size:10px; }'
 		+		'#xmot #vartab .var { width: 60px; border:  1px solid black; background: yellow; display: inline-block; padding:2px; }'
-		+		'#xmot #vartab .val { width: 104px;  border: 1px solid black;  background: white; display: inline-block; padding:2px; }'
+		+		'#xmot #vartab .val { width: 85px;  border: 1px solid black;  background: white; display: inline-block; padding:2px; }'
 		+ 	'</style>';
 	$('.debug').html(tab+css);
 }
