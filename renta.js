@@ -1,8 +1,9 @@
 javascript:
-    invest = 0;
+    invest = 0.0025;
 $.post('https://www.binance.com/user/getMoneyLog.html', function(money) {
     $.each(money.data, function() {
-        invest += parseFloat(this.transferAmount);
+        if (this.coin == 'BTC')
+            invest += parseFloat(this.transferAmount);
     });
 });
 $('.coin').each(function() {
