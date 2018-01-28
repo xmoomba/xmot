@@ -17,10 +17,6 @@ function init() {
     $('#defaultStart').click();
     $('.item-title-btns span:nth-child(2)').click();
 
-
-
-
-
     $('.orderform-type span:nth-child(2)').click();
     $('.orderform-main.f-cb.marketOrder .f-fl:nth-child(1)').after('<div id="xmot" class="f-fl">'
        + '<h1 class="coin">XmoT</h1>'
@@ -109,6 +105,23 @@ function init() {
         }, 1000);
     });
 
+    $('#tradeHistory').after('<br />All trades<br /><div class="item-con" id="allHistory" style="margin-top:1px;">'
+        +'<div class="scrollStyle ng-scope" style="overflow-y:auto;height:163px;" >'
+        +'<table class="table">'
+        +'<colgroup></colgroup>'
+        +'<colgroup></colgroup>'
+        +'<colgroup></colgroup>'
+        +'<colgroup></colgroup>'
+        +'<colgroup></colgroup>'
+        +'<tbody>'
+        +'</tbody>'
+        +'</table>');
+
+    $('.market-box .market-con').css('height', 'inherit');
+    $('#tradeHistory .scrollStyle').css('height', '148px');
+    $('#allHistory .scrollStyle').css('height', '348px').css('width', '340px');
+    $('#allHistory').css('width', '350px');
+    $('.main-aside').css('right', '-90px').css('width', '350px');
     genCss();
 
     loadData();
@@ -117,6 +130,17 @@ function init() {
 }
 
 /*** DISPLAY ***/
+
+function addHistory(buy, coinz, nb, price, eqBTCc) {
+    $('#allHistory table').prepend('<tr class="ng-scope" style="background: white none repeat scroll 0% 0%;">'
+        + '<td class="f-right ng-binding '+ (buy ? 'green' : 'magenta') + '">'+nb+'</td>'
+        +  '<td class="f-right ng-binding '+ (buy ? 'green' : 'magenta') + '">'+coinz+'</td>'
+        +  '<td class="f-right ng-binding '+ (buy ? 'green' : 'magenta') + '">'+price+'</td>'
+        +  '<td class="f-right ng-binding '+ (!buy ? 'green' : 'magenta') + '">'+eqBTCc+' mbtc</td>'
+        +  '<td class="f-right ng-binding">'+ new Date().toLocaleTimeString() +'</td>'
+        +  '</tr>');
+
+}
 
 function genCss() {
     css = '<style>'
@@ -302,12 +326,16 @@ function xmotC() {
 
     targetBTC = $('#inputTarget').val();
     targetOffset = $('#inputOffset').val() / 100;
-
+    var fixed = 0;
     var tmppow = ($('#market_sellQuanity').next().next().text().split(' ')[2].split('.')[1]);
-    if (tmppow == undefined)
+    if (tmppow == undefined) {
         multiplier = Math.pow(10, 1) / 10;
+    }
     else
+    {
         multiplier = Math.pow(10, tmppow.length);
+        fixed = tmppow.length;
+    }
 
     actual = $('.newest').text().split('\t')[17].trim();
     mine = Math.floor($('.marketOrder .orderforms-hd span.f-fr').text().split(' ')[7] * 100000000) / 100000000;
@@ -329,23 +357,25 @@ function xmotC() {
         switchCoin();
     } else {
         initDisplay('Ok');
+        getCandles();
 
-        if ((mine == target) || (buy == sell) || parseFloat((actual * buy) - 0.0022) > parseFloat(myBTC)) {
+        if ((mine == target) || (buy == sell) || parseFloat((actual * buy) - 0.0022) > parseFloat(myBTC) || i < 3 || currentPrice == '-') {
             initDisplay('DO NOTHING');
             switchLock = 0;
         } else {
             initDisplay('daaaaaaaaaaaah');
-            getCandles();
 
             switchLock = 1;
             $('#market_buyQuanity').val(buy);
             $('#market_sellQuanity').val(sell);
             $('#xmot .display').html('<button onclick="goTrade()" id="go" style="padding: 2px">' + (buy > sell ? 'BUY ' : 'SELL ') + Math.round(Math.abs(buy - sell) * multiplier) / multiplier + ' ' + coin + '</button>');
 
-            if ((buy > sell && currentPrice > lastPrice) || (buy < sell && currentPrice < lastPrice)) {
+            if ((buy > sell && actual > lastPrice) || (buy < sell && actual < lastPrice)) {
                 /* TRAAAAAAAAAAAAAAAAAAAAAAAADE */
                 if ($('#autoTrade:checked').val() == 'on') {
+                    addHistory(buy > sell, coin, Math.abs(buy-sell).toFixed(fixed), actual, (actual*Math.abs(buy-sell)*1000).toFixed(3));
                     goTrade();
+                    currentPrice = '-';
                 }
             }
         }
