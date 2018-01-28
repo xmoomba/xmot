@@ -17,42 +17,43 @@ function init() {
     $('#defaultStart').click();
     $('.item-title-btns span:nth-child(2)').click();
 
+
+
+
+
     $('.orderform-type span:nth-child(2)').click();
-    $('.orderform-main.f-cb.marketOrder .f-fl:nth-child(1)').after('<div id="xmot" class="f-fl" style="width:182px;padding:9px;border: 1px solid black">'
-        + '<center>'
-        + '<h1 class="coin" style="color:grey;">XmoT</h1>'
+    $('.orderform-main.f-cb.marketOrder .f-fl:nth-child(1)').after('<div id="xmot" class="f-fl">'
+       + '<h1 class="coin">XmoT</h1>'
         + '<br />'
         + '<input id="cycle" type="checkbox" checked>'
-        + ' Cycle <input id="timeSwitch" value="10" type="text" style="width:30px;margin:3px;padding-left:2px">'
+        + ' Cycle <input id="timeSwitch" value="10" type="text">'
         + '<br />'
         + '<input id="autoTrade" type="checkbox"> AutoTrade'
         + '<br />'
         + '<br />'
-        + '<button id="start" style="padding:4px">start</button>'
-        + '<button id="stop" style="margin-left:16px;padding:4px">stop</button>'
+        + '<button id="start">start</button>'
+        + '<button id="stop">stop</button>'
         + '<br />'
         + '<div style="margin:3px">'
-        + 'Target <input id="inputTarget" value="0.005" type="text" style="width:40px;margin:3px;padding-left:2px">'
+        + 'Target <input id="inputTarget" value="0.005" type="text">'
         + '<br />'
-        + 'Offset <input id="inputOffset" value="2" type="text" style="width:30px;margin:3px;padding-left:2px">%'
+        + 'Offset <input id="inputOffset" value="2" type="text">%'
         + '</div>'
-        + '<div class="dot" style="margin:10px;">Waiting</div>'
-        + '<div style="position:relative;width:109px;margin:10px 0">'
-        + '<div id="cursor" style="position:absolute;top:0;width:3px;height:30px;left:50%;background-color:black">'
-        + '</div>'
-        + '<div style="display: inline-block;height:30px;background-color:#70a800;width:40px;">'
-        + '<div style="position:absolute;margin: 7px 14px;color:white">B</div>'
-        + '</div>'
-        + '<div style="display: inline-block;height:30px;background-color:white;width:20px;"></div>'
-        + '<div style="display: inline-block;height:30px;background-color:#ea0070;width:40px;">'
-        + '<div style="position:absolute;margin: 7px 14px;color:white">S</div>'
-        + '</div>'
+        + '<div class="dot">Waiting</div>'
+        + '<div id="cursorDiv">'
+            + '<div id="cursor"></div>'
+            + '<div class="left">'
+                 + '<div class="inner">B</div>'
+            + '</div>'
+            + '<div  class="middle"></div>'
+            + '<div class="right">'
+                 + '<div class="inner">S</div>'
+            + '</div>'
         + '</div>'
         + '<div class="display"></div>'
         + '<br />'
         + '<input id="debugMode" type="checkbox"> debug'
         + '<div class="debug"></div>'
-        + '</center>'
         + '</div>');
 
     //var coin = $($('.marketOrder .orderforms-hd div label').get(0)).text().split(' ')[1];
@@ -119,7 +120,22 @@ function init() {
 
 function genCss() {
     css = '<style>'
-        + '.moneyConf { width: 350px; }'
+        + '.moneyConf { width:350px; }'
+        + '#xmot { width:182px;padding:9px;border:1px solid black;text-align:center }'
+        + '#xmot h1 { color:grey; }'
+        + '#xmot #timeSwitch { width:30px;margin:3px;padding-left:2px }'
+        + '#xmot #start {padding:4px }'
+        + '#xmot #stop {margin-left:16px;padding:4px}'
+        + '#xmot #inputTarget{ width:40px;margin:3px;padding-left:2px }'
+        + '#xmot #inputOffset{ width:30px;margin:3px;padding-left:2px }'
+        + '#xmot .dot { margin:10px; }'
+        + '#xmot #cursor { position:absolute;top:0;width:3px;height:30px;left:50%;background-color:black }'
+        + '#xmot #cursorDiv { position:relative;margin:10px 0}'
+        + '#xmot #cursorDiv .left { display: inline-block;height:30px;background-color:#70a800;width:40px;}'
+        + '#xmot #cursorDiv .left .inner { position: absolute;margin: 7px 14px;color:white}'
+        + '#xmot #cursorDiv .middle { display: inline-block;height:30px;background-color:white;width:40px;}'
+        + '#xmot #cursorDiv .right { display: inline-block;height:30px;background-color:#ea0070;width:40px;}'
+        + '#xmot #cursorDiv .right .inner { position:absolute;margin: 7px 14px;color:white}'
         + '</style>';
     $('#xmot').append(css);
 }
