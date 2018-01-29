@@ -1,6 +1,5 @@
 javascript:
-    var coin, targetBTC, targetOffset, state, i, running, lock, switchLock, timeout, actual, mine, target, mini, eqBTC, myBTC, buy, sell, currentPrice, lastPrice;
-
+    var forceTrade, coin, targetBTC, targetOffset, state, i, running, lock, switchLock, timeout, actual, mine, target, mini, eqBTC, myBTC, buy, sell, currentPrice, lastPrice;
 
 function init() {
     state = ['', '.', '..', '...'];
@@ -9,6 +8,7 @@ function init() {
     lock = 0;
     switchLock = 0;
     timeout = 180;
+    forceTrade = 0;
 
     $('.container').css('width', '1401px');
     $('.chart').css('padding-left', '100px');
@@ -322,6 +322,7 @@ function switchCoin() {
 }
 
 function goTrade() {
+    addHistory(buy > sell, coin, Math.abs(buy-sell).toFixed(fixed), actual, (actual*Math.abs(buy-sell)*1000).toFixed(3), new Date().toLocaleTimeString());
     if ($('#market_sellQuanity').val() > 0)
         $('.marketOrder .btn-sell').click();
     if ($('#market_buyQuanity').val() > 0)
@@ -389,10 +390,16 @@ function xmotC() {
         if ((mine == target) || (buy == sell) || parseFloat((actual * buy) - 0.0022) > parseFloat(myBTC) || i < 3 || currentPrice == '-') {
             initDisplay('DO NOTHING');
             switchLock = 0;
+            if (forceTrade == 1)
+            {
+                forceTrade = 0;
+                goTrade();
+            }
         } else {
             initDisplay('daaaaaaaaaaaah');
 
             switchLock = 1;
+            forceTrade = 1;
             $('#market_buyQuanity').val(buy);
             $('#market_sellQuanity').val(sell);
             $('#xmot .display').html('<button onclick="goTrade()" id="go" style="padding: 2px">' + (buy > sell ? 'BUY ' : 'SELL ') + Math.round(Math.abs(buy - sell) * multiplier) / multiplier + ' ' + coin + '</button>');
@@ -400,7 +407,7 @@ function xmotC() {
             if ((buy > sell && actual > lastPrice) || (buy < sell && actual < lastPrice)) {
                 /* TRAAAAAAAAAAAAAAAAAAAAAAAADE */
                 if ($('#autoTrade:checked').val() == 'on') {
-                    addHistory(buy > sell, coin, Math.abs(buy-sell).toFixed(fixed), actual, (actual*Math.abs(buy-sell)*1000).toFixed(3), new Date().toLocaleTimeString());
+                    
                     goTrade();
                     currentPrice = '-';
                 }
