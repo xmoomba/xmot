@@ -125,6 +125,7 @@ function init() {
 
     loadData();
     switchCoin();
+    loadHistory();
     $('#xmot #start').click();
 }
 
@@ -138,7 +139,7 @@ function addHistory(buy, coinz, nb, price, eqBTCc, datec) {
         +  '<td class="f-right ng-binding '+ (!buy ? 'green' : 'magenta') + '">'+eqBTCc+' mbtc</td>'
         +  '<td class="f-right ng-binding">'+ datec +'</td>'
         +  '</tr>');
-
+    saveHistory();
 }
 
 
@@ -155,8 +156,8 @@ function saveHistory() {
     var tabHistory = [];
     $('#allHistory .scrollStyle table tr').each(function() {
         buy = $(this).find('td:first').hasClass('green') ? '1' : '0';
-        coinz = $(this).find('td:first').text();
-        nb = $(this).find('td:nth-child(2)').text();
+        nb = $(this).find('td:first').text();
+        coinz = $(this).find('td:nth-child(2)').text();
         price = $(this).find('td:nth-child(3)').text();
         eqBTCc = $(this).find('td:nth-child(4)').text().split(' ')[0];
         datec = $(this).find('td:nth-child(5)').text();
