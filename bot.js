@@ -389,11 +389,12 @@ function xmotC() {
 
         if ((mine == target) || (buy == sell) || parseFloat((actual * buy) - 0.0022) > parseFloat(myBTC) || i < 3 || currentPrice == '-') {
             initDisplay('DO NOTHING');
-            switchLock = 0;
             if (forceTrade == 1)
             {
                 forceTrade = 0;
                 goTrade();
+            } else {
+                switchLock = 0;
             }
         } else {
             initDisplay('daaaaaaaaaaaah');
