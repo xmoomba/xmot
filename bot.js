@@ -1,6 +1,7 @@
 javascript:
     var forceTrade, coin, targetBTC, targetOffset, state, i, running, lock, switchLock, timeout, actual, mine, target, mini, eqBTC, myBTC, buy, sell, currentPrice, lastPrice;
 
+
 function init() {
     state = ['', '.', '..', '...'];
     i = 0;
