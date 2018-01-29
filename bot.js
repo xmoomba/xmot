@@ -130,15 +130,39 @@ function init() {
 
 /*** DISPLAY ***/
 
-function addHistory(buy, coinz, nb, price, eqBTCc) {
+function addHistory(buy, coinz, nb, price, eqBTCc, datec) {
     $('#allHistory table').prepend('<tr class="ng-scope" style="background: white none repeat scroll 0% 0%;">'
         + '<td class="f-right ng-binding '+ (buy ? 'green' : 'magenta') + '">'+nb+'</td>'
         +  '<td class="f-right ng-binding '+ (buy ? 'green' : 'magenta') + '">'+coinz+'</td>'
         +  '<td class="f-right ng-binding '+ (buy ? 'green' : 'magenta') + '">'+price+'</td>'
         +  '<td class="f-right ng-binding '+ (!buy ? 'green' : 'magenta') + '">'+eqBTCc+' mbtc</td>'
-        +  '<td class="f-right ng-binding">'+ new Date().toLocaleTimeString() +'</td>'
+        +  '<td class="f-right ng-binding">'+ datec +'</td>'
         +  '</tr>');
 
+}
+
+
+
+function loadHistory() {
+    conf = getCookie('history_xmot');
+    $.each(conf.split('|'), function() {
+        tab = this.split('#');
+            addHistory(tab[0] == '1' ? 1 : 0, tab[1], tab[2], tab[3], tab[4], tab[5]);
+    });
+}
+
+function saveHistory() {
+    var tabHistory = [];
+    $('#allHistory .scrollStyle table tr').each(function() {
+        buy = $(this).find('td:first').hasClass('green') ? '1' : '0';
+        coinz = $(this).find('td:first').text();
+        nb = $(this).find('td:nth-child(2)').text();
+        price = $(this).find('td:nth-child(3)').text();
+        eqBTCc = $(this).find('td:nth-child(4)').text().split(' ')[0];
+        datec = $(this).find('td:nth-child(5)').text();
+        tabHistory.unshift(buy+'#'+coinz+'#'+nb+'#'+price+'#'+eqBTCc+'#'+datec);
+        setCookie('history_xmot', tabHistory.join('|'));
+    });
 }
 
 function genCss() {
@@ -372,7 +396,7 @@ function xmotC() {
             if ((buy > sell && actual > lastPrice) || (buy < sell && actual < lastPrice)) {
                 /* TRAAAAAAAAAAAAAAAAAAAAAAAADE */
                 if ($('#autoTrade:checked').val() == 'on') {
-                    addHistory(buy > sell, coin, Math.abs(buy-sell).toFixed(fixed), actual, (actual*Math.abs(buy-sell)*1000).toFixed(3));
+                    addHistory(buy > sell, coin, Math.abs(buy-sell).toFixed(fixed), actual, (actual*Math.abs(buy-sell)*1000).toFixed(3), new Date().toLocaleTimeString());
                     goTrade();
                     currentPrice = '-';
                 }
