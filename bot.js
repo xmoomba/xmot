@@ -52,7 +52,6 @@ function init() {
         + '<div class="debug"></div>'
         + '</div>');
 
-    //var coin = $($('.marketOrder .orderforms-hd div label').get(0)).text().split(' ')[1];
     $($('.marketOrder .orderforms-hd div').get(0)).after('<div class="xdel">'
         + '<span class="f-fr ng-binding">'
         + '<span class="coin">' + coin + '</span> '
