@@ -77,6 +77,8 @@ function init() {
                         $('#xmot .display').html('DO NOTHING');
                         $('#market_buyQuanity').val('-');
                         $('#market_sellQuanity').val('-');
+						/* forceTrade = 0; -- ligne a inhiber si on veut Forcer le trade au Timeout */
+						forceTrade = 0;
                         switchCoin();
                     }
                 }
@@ -389,6 +391,7 @@ function xmotC() {
 
         if ((mine == target) || (buy == sell) || parseFloat((actual * buy) - 0.0022) > parseFloat(myBTC) || i < 3 || currentPrice == '-') {
             initDisplay('DO NOTHING');
+			/* pour forcer le trade si on sort de la marge */
             if (forceTrade == 1)
             {
                 forceTrade = 0;
