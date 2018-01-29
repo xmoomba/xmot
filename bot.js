@@ -146,10 +146,12 @@ function addHistory(buy, coinz, nb, price, eqBTCc, datec) {
 
 function loadHistory() {
     conf = getCookie('history_xmot');
-    $.each(conf.split('|'), function() {
-        tab = this.split('#');
-            addHistory(tab[0] == '1' ? 1 : 0, tab[1], tab[2], tab[3], tab[4], tab[5]);
-    });
+    if (conf) {
+        $.each(conf.split('|'), function() {
+            tab = this.split('#');
+                addHistory(tab[0] == '1' ? 1 : 0, tab[1], tab[2], tab[3], tab[4], tab[5]);
+        });
+    }
 }
 
 function saveHistory() {
