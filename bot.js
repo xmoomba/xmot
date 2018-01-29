@@ -1,15 +1,15 @@
 javascript:
     var forceTrade, coin, targetBTC, targetOffset, state, i, running, lock, switchLock, timeout, actual, mine, target, mini, eqBTC, myBTC, buy, sell, currentPrice, lastPrice;
 
-
 function init() {
     state = ['', '.', '..', '...'];
     i = 0;
     running = 0;
     lock = 0;
     switchLock = 0;
-    timeout = 300;
+    timeout = 180;
     forceTrade = 0;
+
 
     $('.container').css('width', '1401px');
     $('.chart').css('padding-left', '100px');
@@ -323,7 +323,6 @@ function switchCoin() {
 }
 
 function goTrade() {
-    addHistory(buy > sell, coin, Math.abs(buy-sell).toFixed(fixed), actual, (actual*Math.abs(buy-sell)*1000).toFixed(3), new Date().toLocaleTimeString());
     if ($('#market_sellQuanity').val() > 0)
         $('.marketOrder .btn-sell').click();
     if ($('#market_buyQuanity').val() > 0)
@@ -409,7 +408,7 @@ function xmotC() {
             if ((buy > sell && actual > lastPrice) || (buy < sell && actual < lastPrice)) {
                 /* TRAAAAAAAAAAAAAAAAAAAAAAAADE */
                 if ($('#autoTrade:checked').val() == 'on') {
-                    
+                    addHistory(buy > sell, coin, Math.abs(buy-sell).toFixed(fixed), actual, (actual*Math.abs(buy-sell)*1000).toFixed(3), new Date().toLocaleTimeString());
                     goTrade();
                     currentPrice = '-';
                 }
