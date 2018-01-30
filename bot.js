@@ -1,5 +1,5 @@
 javascript:
-    var forceTrade, coin, targetBTC, targetOffset, state, i, running, lock, switchLock, timeout, actual, mine, target, mini, eqBTC, myBTC, buy, sell, currentPrice, lastPrice;
+    var fixed, forceTrade, coin, targetBTC, targetOffset, state, i, running, lock, switchLock, timeout, actual, mine, target, mini, eqBTC, myBTC, buy, sell, currentPrice, lastPrice;
 
 function init() {
     state = ['', '.', '..', '...'];
@@ -136,14 +136,17 @@ function init() {
 /*** DISPLAY ***/
 
 function addHistory(buy, coinz, nb, price, eqBTCc, datec) {
-    $('#allHistory table').prepend('<tr class="ng-scope" style="background: white none repeat scroll 0% 0%;">'
+	if (nb != 0)
+	{
+		$('#allHistory table').prepend('<tr class="ng-scope" style="background: white none repeat scroll 0% 0%;">'
         + '<td class="f-right ng-binding '+ (buy ? 'green' : 'magenta') + '">'+nb+'</td>'
         +  '<td class="f-right ng-binding '+ (buy ? 'green' : 'magenta') + '">'+coinz+'</td>'
         +  '<td class="f-right ng-binding '+ (buy ? 'green' : 'magenta') + '">'+price+'</td>'
         +  '<td class="f-right ng-binding '+ (!buy ? 'green' : 'magenta') + '">'+eqBTCc+' mbtc</td>'
         +  '<td class="f-right ng-binding">'+ datec +'</td>'
         +  '</tr>');
-    saveHistory();
+		saveHistory();
+	}
 }
 
 
@@ -325,10 +328,12 @@ function switchCoin() {
 }
 
 function goTrade() {
-    if ($('#market_sellQuanity').val() > 0)
+	addHistory(buy > sell, coin, Math.abs(buy-sell).toFixed(fixed), actual, (actual*Math.abs(buy-sell)*1000).toFixed(3), new Date().toLocaleTimeString());
+	if ($('#market_sellQuanity').val() > 0)
         $('.marketOrder .btn-sell').click();
     if ($('#market_buyQuanity').val() > 0)
         $('.marketOrder .btn-buy').click();
+	currentPrice = '-';
     switchCoin();
 }
 
@@ -356,7 +361,7 @@ function xmotC() {
 
     targetBTC = $('#inputTarget').val();
     targetOffset = $('#inputOffset').val() / 100;
-    var fixed = 0;
+    fixed = 0;
     var tmppow = ($('#market_sellQuanity').next().next().text().split(' ')[2].split('.')[1]);
     if (tmppow == undefined) {
         multiplier = Math.pow(10, 1) / 10;
@@ -395,9 +400,7 @@ function xmotC() {
             if (forceTrade == 1)
             {
                 forceTrade = 0;
-                addHistory(buy > sell, coin, Math.abs(buy-sell).toFixed(fixed), actual, (actual*Math.abs(buy-sell)*1000).toFixed(3), new Date().toLocaleTimeString());
 				goTrade();
-				currentPrice = '-';
 			} else {
 				initDisplay('DO NOTHING');
                 switchLock = 0;
@@ -414,9 +417,7 @@ function xmotC() {
             if ((buy > sell && actual > lastPrice) || (buy < sell && actual < lastPrice)) {
                 /* TRAAAAAAAAAAAAAAAAAAAAAAAADE */
                 if ($('#autoTrade:checked').val() == 'on') {
-                    addHistory(buy > sell, coin, Math.abs(buy-sell).toFixed(fixed), actual, (actual*Math.abs(buy-sell)*1000).toFixed(3), new Date().toLocaleTimeString());
                     goTrade();
-                    currentPrice = '-';
                 }
             } 
         }
