@@ -390,13 +390,16 @@ function xmotC() {
         getCandles();
 
         if ((mine == target) || (buy == sell) || parseFloat((actual * buy) - 0.0022) > parseFloat(myBTC) || i < 3 || currentPrice == '-') {
-            initDisplay('DO NOTHING');
+            
 			/* pour forcer le trade si on sort de la marge */
             if (forceTrade == 1)
             {
                 forceTrade = 0;
-                goTrade();
-            } else {
+                addHistory(buy > sell, coin, Math.abs(buy-sell).toFixed(fixed), actual, (actual*Math.abs(buy-sell)*1000).toFixed(3), new Date().toLocaleTimeString());
+				goTrade();
+				currentPrice = '-';
+			} else {
+				initDisplay('DO NOTHING');
                 switchLock = 0;
             }
         } else {
@@ -415,7 +418,7 @@ function xmotC() {
                     goTrade();
                     currentPrice = '-';
                 }
-            }
+            } 
         }
     }
 }
