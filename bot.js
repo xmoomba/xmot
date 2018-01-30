@@ -385,7 +385,9 @@ function xmotC() {
     sell = Math.floor(parseFloat(mini + (mine - targetOffset * target > target ? mine - target : 0)) * multiplier) / multiplier;
 
     infosDisplay();
-
+	
+	/* choose max margin to trigger goTrade */
+	maxMarginBeforeForceTrade = 1.75;
 
     if ($('#conf_'+coin+' .active:checked').val() != 'on'){
         initDisplay('DISABLED');
@@ -400,7 +402,9 @@ function xmotC() {
             if (forceTrade == 1)
             {
                 forceTrade = 0;
-				goTrade();
+				if ($('#autoTrade:checked').val() == 'on') {
+                    goTrade();
+                }
 			} else {
 				initDisplay('DO NOTHING');
                 switchLock = 0;
@@ -419,7 +423,11 @@ function xmotC() {
                 if ($('#autoTrade:checked').val() == 'on') {
                     goTrade();
                 }
-            } 
+            } else if ((Math.abs(mine - target)/mine) * 100 > coffset * maxMarginBeforeForceTrade) {
+				if ($('#autoTrade:checked').val() == 'on') {
+                    goTrade();
+                }
+			}
         }
     }
 }
