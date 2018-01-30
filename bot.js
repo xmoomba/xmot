@@ -397,8 +397,7 @@ function xmotC() {
         getCandles();
 
         if ((mine == target) || (buy == sell) || parseFloat((actual * buy) - 0.0022) > parseFloat(myBTC) || i < 3 || currentPrice == '-') {
-            
-			/* pour forcer le trade si on sort de la marge */
+        	/* pour forcer le trade si on sort de la marge */
             if (forceTrade == 1)
             {
                 forceTrade = 0;
