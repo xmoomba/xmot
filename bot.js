@@ -7,7 +7,7 @@ function init() {
     running = 0;
     lock = 0;
     switchLock = 0;
-    timeout = 180;
+    timeout = 300;
     forceTrade = 0;
 
 
@@ -97,15 +97,15 @@ function init() {
     });
 
     $('.market-con ul').click(function () {
-        lock = 1;
+        /*lock = 1;*/
         coin = '';
         $('#xmot .display').html('SWITCHING...');
         $('#market_buyQuanity').val('-');
         $('#market_sellQuanity').val('-');
         $('#cursor').hide();
-        setTimeout(function () {
+        /*setTimeout(function () {
             lock = 0;
-        }, 1000);
+        }, 1000);*/
     });
 
     $('#tradeHistory').after('<br />All trades<br /><div class="item-con" id="allHistory" style="margin-top:1px;">'
@@ -316,6 +316,9 @@ function saveData() {
 /*** ALGO ***/
 
 function switchCoin() {
+	forceTrade = 0;
+	i = 1;
+	
     nextCoin = $('.market-con ul.selectedPro:visible').next('ul:visible');
     if (nextCoin.text() == '')
         $('.market-con ul:visible:first-child').click();
@@ -324,7 +327,8 @@ function switchCoin() {
 
     /* reinit */
     switchLock = 0;
-    i = 1;
+    
+	
 }
 
 function goTrade() {
@@ -334,6 +338,8 @@ function goTrade() {
     if ($('#market_buyQuanity').val() > 0)
         $('.marketOrder .btn-buy').click();
 	currentPrice = '-';
+	lastPrice = '-';
+	initDisplay('DO NOTHING');
     switchCoin();
 }
 
@@ -397,10 +403,12 @@ function xmotC() {
         getCandles();
 
         if ((mine == target) || (buy == sell) || parseFloat((actual * buy) - 0.0022) > parseFloat(myBTC) || i < 3 || currentPrice == '-') {
-        	/* pour forcer le trade si on sort de la marge */
+            
+			/* pour forcer le trade si on sort de la marge */
             if (forceTrade == 1)
             {
                 forceTrade = 0;
+				i = 1;
 				if ($('#autoTrade:checked').val() == 'on') {
                     goTrade();
                 }
