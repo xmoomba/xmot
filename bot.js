@@ -340,6 +340,7 @@ function goTrade() {
 	currentPrice = '-';
 	lastPrice = '-';
 	initDisplay('DO NOTHING');
+	forceTrade = 0;
     switchCoin();
 }
 
@@ -407,9 +408,11 @@ function xmotC() {
 			/* pour forcer le trade si on sort de la marge */
             if (forceTrade == 1)
             {
-                forceTrade = 0;
+				forceTrade = 0;
 				i = 1;
 				if ($('#autoTrade:checked').val() == 'on') {
+					$('#market_buyQuanity').val(buy);
+					$('#market_sellQuanity').val(sell);
                     goTrade();
                 }
 			} else {
