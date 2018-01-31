@@ -403,18 +403,18 @@ function xmotC() {
         initDisplay('Ok');
         getCandles();
 
-        if ((mine == target) || (buy == sell) || parseFloat((actual * buy) - 0.0022) > parseFloat(myBTC) || i < 3 || currentPrice == '-') {
+        if ((mine == target) || (buy == sell) || parseFloat((actual * buy) - 0.0022) > parseFloat(myBTC) || i < 5 || currentPrice == '-') {
             
 			/* pour forcer le trade si on sort de la marge */
             if (forceTrade == 1)
             {
 				forceTrade = 0;
-				i = 1;
+				/*i = 1;
 				if ($('#autoTrade:checked').val() == 'on') {
 					$('#market_buyQuanity').val(buy);
 					$('#market_sellQuanity').val(sell);
                     goTrade();
-                }
+                }*/
 			} else {
 				initDisplay('DO NOTHING');
                 switchLock = 0;
