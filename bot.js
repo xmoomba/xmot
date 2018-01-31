@@ -341,6 +341,7 @@ function goTrade() {
 	lastPrice = '-';
 	initDisplay('DO NOTHING');
 	forceTrade = 0;
+	switchLock = 0;
     switchCoin();
 }
 
@@ -403,22 +404,24 @@ function xmotC() {
         initDisplay('Ok');
         getCandles();
 
-        if ((mine == target) || (buy == sell) || parseFloat((actual * buy) - 0.0022) > parseFloat(myBTC) || i < 5 || currentPrice == '-') {
-            
-			/* pour forcer le trade si on sort de la marge */
-            if (forceTrade == 1)
-            {
-				forceTrade = 0;
-				/*i = 1;
-				if ($('#autoTrade:checked').val() == 'on') {
+		/* pour forcer le trade si on sort de la marge */
+		if (forceTrade == 1)
+        {
+			forceTrade = 0;
+			i = 1;
+			
+			if ($('#autoTrade:checked').val() == 'on') {
+				if ((buy > sell) || (buy < sell)) {
 					$('#market_buyQuanity').val(buy);
 					$('#market_sellQuanity').val(sell);
-                    goTrade();
-                }*/
-			} else {
-				initDisplay('DO NOTHING');
-                switchLock = 0;
-            }
+					goTrade();
+				}
+			}
+		}
+		
+        if ((mine == target) || (buy == sell) || parseFloat((actual * buy) - 0.0022) > parseFloat(myBTC) || i < 5 || currentPrice == '-') {
+            initDisplay('DO NOTHING');
+            switchLock = 0;
         } else {
             initDisplay('daaaaaaaaaaaah');
 
@@ -428,16 +431,12 @@ function xmotC() {
             $('#market_sellQuanity').val(sell);
             $('#xmot .display').html('<button onclick="goTrade()" id="go" style="padding: 2px">' + (buy > sell ? 'BUY ' : 'SELL ') + Math.round(Math.abs(buy - sell) * multiplier) / multiplier + ' ' + coin + '</button>');
 
-            if ((buy > sell && actual > lastPrice) || (buy < sell && actual < lastPrice)) {
+            if ((buy > sell && actual > lastPrice) || (buy < sell && actual < lastPrice) || ((Math.abs(mine - target)/mine) * 100 > coffset * maxMarginBeforeForceTrade)) {
                 /* TRAAAAAAAAAAAAAAAAAAAAAAAADE */
                 if ($('#autoTrade:checked').val() == 'on') {
                     goTrade();
                 }
-            } else if ((Math.abs(mine - target)/mine) * 100 > coffset * maxMarginBeforeForceTrade) {
-				if ($('#autoTrade:checked').val() == 'on') {
-                    goTrade();
-                }
-			}
+            } 
         }
     }
 }
