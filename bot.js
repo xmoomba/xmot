@@ -103,6 +103,13 @@ function init() {
         $('#market_buyQuanity').val('-');
         $('#market_sellQuanity').val('-');
         $('#cursor').hide();
+		/* reinit if clicked */
+		i = 1;
+		currentPrice = '-';
+		lastPrice = '-';
+		initDisplay('DO NOTHING');
+		forceTrade = 0;
+		switchLock = 0;
         /*setTimeout(function () {
             lock = 0;
         }, 1000);*/
@@ -441,4 +448,4 @@ function xmotC() {
     }
 }
 
-init();ooo;
+init();Dirty_toad;
