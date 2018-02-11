@@ -398,11 +398,12 @@ function xmotC() {
         fixed = tmppow.length;
     }
 
+	var miniFees = 0.0012;
     actual = $('.newest').text().split('\t')[17].trim();
     /*mine = Math.floor($('.marketOrder .orderforms-hd span.f-fr').text().split(' ')[8] * 100000000) / 100000000;*/
 	mine = Math.floor($('.marketOrder .orderforms-hd span.f-fr').text().split(' ')[7] * 100000000) / 100000000;
     target = Math.floor(targetBTC / actual * 100000000) / 100000000;
-    mini = Math.ceil(0.0022 / $('.newest').text().split('\t')[17].trim() * 100000000) / 100000000;
+    mini = Math.ceil(miniFees / $('.newest').text().split('\t')[17].trim() * 100000000) / 100000000;
     eqBTC = Math.round($($('.marketOrder .orderforms-hd div span').get(4)).text().split(' ')[2] * actual * 100000000) / 100000000;
     myBTC = $($('.marketOrder .orderforms-hd div span').get(0)).text().split(' ')[2];
 
@@ -438,7 +439,7 @@ function xmotC() {
 			}
 		}
 		
-        if ((mine == target) || (buy == sell) || parseFloat((actual * buy) - 0.0022) > parseFloat(myBTC) || i < 5 || currentPrice == '-') {
+        if ((mine == target) || (buy == sell) || parseFloat((actual * buy) - miniFees) > parseFloat(myBTC) || i < 5 || currentPrice == '-') {
             initDisplay('DO NOTHING');
             switchLock = 0;
         } else {
