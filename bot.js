@@ -99,6 +99,7 @@ function init() {
     $('.market-con ul').click(function () {
         /*lock = 1;*/
         coin = '';
+		mine = '';
         $('#xmot .display').html('SWITCHING...');
         $('#market_buyQuanity').val('-');
         $('#market_sellQuanity').val('-');
@@ -359,17 +360,21 @@ function goTrade() {
 }
 
 function getCandles() {
-	    $.get('https://www.binance.com/api/v1/klines?symbol=' + coin.slice(0, -1) + 'BTC&interval=1m', function (data) {
+	    /*$.get('https://www.binance.com/api/v1/klines?symbol=' + coin.slice(0, -1) + 'BTC&interval=1m', function (data) {*/
+		$.get('https://www.binance.com/api/v1/klines?symbol=' + coin + 'BTC&interval=1m', function (data) {
         currentPrice = data[499][4];
         lastPrice = data[498][1];
     });
 }
 
 function getCoin() {
-    coin = $('.productSymbol').text().split('/')[0];
+    /*coin = $('.productSymbol').text().split('/')[0];*/
+	coin = $('.productSymbol').text().split("\t")[6].slice(0, -7);
 }
 
 function xmotC() {
+	
+	
     getCoin();
     saveData();
     debug();
@@ -394,7 +399,8 @@ function xmotC() {
     }
 
     actual = $('.newest').text().split('\t')[17].trim();
-    mine = Math.floor($('.marketOrder .orderforms-hd span.f-fr').text().split(' ')[8] * 100000000) / 100000000;
+    /*mine = Math.floor($('.marketOrder .orderforms-hd span.f-fr').text().split(' ')[8] * 100000000) / 100000000;*/
+	mine = Math.floor($('.marketOrder .orderforms-hd span.f-fr').text().split(' ')[7] * 100000000) / 100000000;
     target = Math.floor(targetBTC / actual * 100000000) / 100000000;
     mini = Math.ceil(0.0022 / $('.newest').text().split('\t')[17].trim() * 100000000) / 100000000;
     eqBTC = Math.round($($('.marketOrder .orderforms-hd div span').get(4)).text().split(' ')[2] * actual * 100000000) / 100000000;
